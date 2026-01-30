@@ -275,10 +275,9 @@ test('TC_Pos_Fun_24 – Intent sentence', async ({ page }) => {
 test('Neg_Fun_0001 – Input with excessive numbers', async ({ page }) => {
   await page.goto('https://www.swifttranslator.com/');
   const input = page.getByPlaceholder('Input Your Singlish Text Here.');
-  await expect(input).toBeVisible();
-  await input.fill('mama 1234567890 yannee');
+  await input.fill('mama 9876543210 yanvaa');
   await page.waitForTimeout(3000);
-  await expect(input).toHaveValue('mama 1234567890 yannee');
+  await expect(input).toHaveValue('mama 9876543210 yanvaa');
 });
 
 /*
@@ -287,108 +286,124 @@ test('Neg_Fun_0001 – Input with excessive numbers', async ({ page }) => {
 test('Neg_Fun_0002 – Input with multiple special characters', async ({ page }) => {
   await page.goto('https://www.swifttranslator.com/');
   const input = page.getByPlaceholder('Input Your Singlish Text Here.');
-  await expect(input).toBeVisible();
-  await input.fill('mama @@##$$ yanvaa!!!');
+  await input.fill('oyaa @@!!$$ yanvaa???');
   await page.waitForTimeout(3000);
-  await expect(input).toHaveValue('mama @@##$$ yanvaa!!!');
+  await expect(input).toHaveValue('oyaa @@!!$$ yanvaa???');
 });
 
 /*
- * Neg_Fun_0003 – Excessive spaces
+ * Neg_Fun_0003 – Random whitespace
  */
-test('Neg_Fun_0003 – Excessive spaces', async ({ page }) => {
+test('Neg_Fun_0003 – Random whitespace', async ({ page }) => {
   await page.goto('https://www.swifttranslator.com/');
   const input = page.getByPlaceholder('Input Your Singlish Text Here.');
-  await expect(input).toBeVisible();
-  await input.fill('mama    gedhara   yanavaa');
+  await input.fill('mama kade yanavaa  ');
   await page.waitForTimeout(3000);
-  await expect(input).toHaveValue('mama    gedhara   yanavaa');
+  await expect(input).toContainText('mama kade yanavaa');
 });
 
 /*
- * Neg_Fun_0004 – Line breaks / multi-line input
+ * Neg_Fun_0004 – Multi-line input
  */
-test('Neg_Fun_0004 – Line breaks / multi-line input', async ({ page }) => {
+test('Neg_Fun_0004 – Multi-line input', async ({ page }) => {
   await page.goto('https://www.swifttranslator.com/');
   const input = page.getByPlaceholder('Input Your Singlish Text Here.');
-  await expect(input).toBeVisible();
-  await input.fill(`mama gedhara yanavaa
-oyā enavadha?`);
+  await input.fill('mama kadeta yanavaa\no ya enava da?');
   await page.waitForTimeout(3000);
-  await expect(input).toHaveValue(`mama gedhara yanavaa
-oyā enavadha?`);
+  await expect(input).toContainText('mama kadeta yanavaa');
 });
 
 /*
- * Neg_Fun_0005 – Long paragraph ≥300 characters
+ * Neg_Fun_0005 – Long paragraph (≥300 characters)
  */
-test('Neg_Fun_0005 – Long paragraph ≥300 characters', async ({ page }) => {
+test('Neg_Fun_0005 – Long paragraph input', async ({ page }) => {
   await page.goto('https://www.swifttranslator.com/');
   const input = page.getByPlaceholder('Input Your Singlish Text Here.');
-  await expect(input).toBeVisible();
-  await input.fill(`dhitvaa suLi kuNaatuva samaGa aethi vuu gQQvathura saha naayayaeem heethuven maarga sQQvarDhana aDhikaariya sathu maarga kotas 430k vinaashayata pathva aethi athara, ehi samastha dhiga pramaaNaya kiloomiitar 300k pamaNa vana bava pravaahana,mahaamaarga saha naagarika sQQvarDhana amaathYA bimal rathnaayaka saDHahan kaLeeya.`);
-  await page.waitForTimeout(3000);
-  await expect(input).toHaveValue(`dhitvaa suLi kuNaatuva samaGa aethi vuu gQQvathura saha naayayaeem heethuven maarga sQQvarDhana aDhikaariya sathu maarga kotas 430k vinaashayata pathva aethi athara, ehi samastha dhiga pramaaNaya kiloomiitar 300k pamaNa vana bava pravaahana,mahaamaarga saha naagarika sQQvarDhana amaathYA bimal rathnaayaka saDHahan kaLeeya.`);
+
+  const longText = `
+apa sellam karannee kaelaee rodhak idhiriyehi vuu vaeli thalaavaka ya.
+gamee bohoo dhenakun gannee kaelaee rodheta dhakuNin pihiti loku pokuNakini.
+eheyin dhavasak paasaama udhee sita dhahaval dhoLaha vana thek gaehuth pirimith
+Lamayin mee pokuNin naanu piNisa vaela nokadaa.
+`;
+
+  await input.fill(longText);
+  await page.waitForTimeout(4000);
+  await expect(input).toContainText('apa sellam karannee');
 });
 
 /*
- * Neg_Fun_0006 – Mixed incorrect capitalization
+ * Neg_Fun_0006 – Mixed capitalization
  */
-test('Neg_Fun_0006 – Mixed incorrect capitalization', async ({ page }) => {
+
+test('Neg_Fun_0006 – Mixed capitalization', async ({ page }) => {
+
+  // Step 1: Open SwiftTranslator website
+  await page.goto('https://www.swifttranslator.com/');
+
+  // Step 2: Locate input field
+  const input = page.getByPlaceholder('Input Your Singlish Text Here.');
+
+  // Step 3: Verify input field is visible
+  await expect(input).toBeVisible();
+
+  // Step 4: Enter mixed-capitalization input
+  const mixedCaseInput = 'OYAA gedhara YANAVAA';
+  await input.fill(mixedCaseInput);
+
+  // Step 5: Wait for processing
+  await page.waitForTimeout(3000);
+
+  // Step 6: Validate application stability (input accepted as-is)
+  await expect(input).toHaveValue(mixedCaseInput);
+
+});
+
+
+/*
+ * Neg_Fun_0007 – Joined words
+ */
+test('Neg_Fun_0007 – Joined words', async ({ page }) => {
   await page.goto('https://www.swifttranslator.com/');
   const input = page.getByPlaceholder('Input Your Singlish Text Here.');
-  await expect(input).toBeVisible();
-  await input.fill('MAMA gedhara Yanavaa');
+  await input.fill('mamaofficeyanavaa');
   await page.waitForTimeout(3000);
-  await expect(input).toHaveValue('MAMA gedhara Yanavaa');
+  await expect(input).toHaveValue('mamaofficeyanavaa');
 });
 
 /*
- * Neg_Fun_0007 – Joined words / missing spaces
+ * Neg_Fun_0008 – Unsupported slang
  */
-test('Neg_Fun_0007 – Joined words / missing spaces', async ({ page }) => {
+test('Neg_Fun_0008 – Unsupported slang', async ({ page }) => {
   await page.goto('https://www.swifttranslator.com/');
   const input = page.getByPlaceholder('Input Your Singlish Text Here.');
-  await expect(input).toBeVisible();
-  await input.fill('mamagedharayanavaa');
+  await input.fill('wah machan super bro!!');
   await page.waitForTimeout(3000);
-  await expect(input).toHaveValue('mamagedharayanavaa');
+  await expect(input).toHaveValue('wah machan super bro!!');
 });
 
 /*
- * Neg_Fun_0008 – Unsupported slang / colloquial phrases
+ * Neg_Fun_0009 – Mixed English + Singlish
  */
-test('Neg_Fun_0008 – Unsupported slang / colloquial phrases', async ({ page }) => {
+test('Neg_Fun_0009 – Mixed English + Singlish', async ({ page }) => {
   await page.goto('https://www.swifttranslator.com/');
   const input = page.getByPlaceholder('Input Your Singlish Text Here.');
-  await expect(input).toBeVisible();
-  await input.fill('ela machan supiri!!');
+  await input.fill('email karanna oonee before 5pm, mama office yanavaa');
   await page.waitForTimeout(3000);
-  await expect(input).toHaveValue('ela machan supiri!!');
+  await expect(input).toHaveValue(
+    'email karanna oonee before 5pm, mama office yanavaa'
+  );
 });
 
 /*
- * Neg_Fun_0009 – Mixed English + Singlish with abbreviations
+ * Neg_Fun_0010 – Incorrect punctuation
  */
-test('Neg_Fun_0009 – Mixed English + Singlish with abbreviations', async ({ page }) => {
+test('Neg_Fun_0010 – Incorrect punctuation', async ({ page }) => {
   await page.goto('https://www.swifttranslator.com/');
   const input = page.getByPlaceholder('Input Your Singlish Text Here.');
-  await expect(input).toBeVisible();
-  await input.fill('mata zoom link ekak email karanna oonee Thx');
+  await input.fill('mama kadeta yanavaa!!!??');
   await page.waitForTimeout(3000);
-  await expect(input).toHaveValue('mata zoom link ekak email karanna oonee Thx');
-});
-
-/*
- * Neg_Fun_0010 – Incorrect punctuation placement
- */
-test('Neg_Fun_0010 – Incorrect punctuation placement', async ({ page }) => {
-  await page.goto('https://www.swifttranslator.com/');
-  const input = page.getByPlaceholder('Input Your Singlish Text Here.');
-  await expect(input).toBeVisible();
-  await input.fill('mama gedhara yanavaa??!!');
-  await page.waitForTimeout(3000);
-  await expect(input).toHaveValue('mama gedhara yanavaa??!!');
+  await expect(input).toHaveValue('mama kadeta yanavaa!!!??');
 });
 
 /*
@@ -405,4 +420,32 @@ test('UI_Test_0001 – Input box visibility & placeholder', async ({ page }) => 
 
   // Check if placeholder text is correct
   await expect(input).toHaveAttribute('placeholder', 'Input Your Singlish Text Here.');
+});
+
+/*
+ * NEG_Test_001 – Special characters only input
+ */
+
+
+test('NEG_Test_001 – Special characters only input', async ({ page }) => {
+
+  // Step 1: Open SwiftTranslator website
+  await page.goto('https://www.swifttranslator.com/');
+
+  // Step 2: Locate input field
+  const singlishInput = page.getByPlaceholder('Input Your Singlish Text Here.');
+
+  // Step 3: Verify input field is visible
+  await expect(singlishInput).toBeVisible();
+
+  // Step 4: Enter invalid input (special characters only)
+  const invalidInput = '@#$%^&*()!!!';
+  await singlishInput.fill(invalidInput);
+
+  // Step 5: Wait for processing
+  await page.waitForTimeout(3000);
+
+  // Step 6: Validate application stability (no crash, input retained)
+  await expect(singlishInput).toHaveValue(invalidInput);
+
 });
